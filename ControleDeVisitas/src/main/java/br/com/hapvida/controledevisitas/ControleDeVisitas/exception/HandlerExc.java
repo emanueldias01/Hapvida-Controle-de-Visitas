@@ -54,4 +54,38 @@ public class HandlerExc {
                 ex.getMessage()
         );
     }
+
+
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO trataVisitanteNotFound(VisitanteNotFoundException ex){
+
+        return new ErrorDTO(
+                ex.getLancamento(),
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO trataNomeVisitanteJaExiste(NomeVisitanteJaExisteException ex){
+
+        return new ErrorDTO(
+                ex.getLancamento(),
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO trataLeitoCheioException(LeitoCheioException ex){
+
+        return new ErrorDTO(
+                ex.getLancamento(),
+                ex.getMessage()
+        );
+    }
 }

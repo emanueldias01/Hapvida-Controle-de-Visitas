@@ -1,5 +1,6 @@
 package br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel;
 
+import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,4 +30,11 @@ public class Visitante {
     @ManyToOne
     private Paciente paciente;
 
+    public Visitante(VisitanteRequestDTO data) {
+        this.nome = data.nome();
+        this.cpf = data.cpf();
+        this.categoria = data.categoria();
+        this.paciente = data.paciente();
+        this.dataEntrada = LocalDateTime.now();
+    }
 }
