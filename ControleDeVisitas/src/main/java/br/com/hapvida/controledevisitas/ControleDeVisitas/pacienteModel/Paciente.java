@@ -1,5 +1,7 @@
 package br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel;
 
+import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,4 +32,17 @@ public class Paciente {
 
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Visitante> visitantes;
+
+    public Paciente(PacienteRequestDTO data) {
+        this.nome = data.nome();
+        this.cpf = data.cpf();
+        this.numeroLeito = data.leito();
+        this.dataEntrada = LocalDateTime.now();
+    }
+
+    public void updateInfo(PacienteUpdateDTO data) {
+        if(data.leito() != 0){
+            this.numeroLeito = data.leito();
+        }
+    }
 }

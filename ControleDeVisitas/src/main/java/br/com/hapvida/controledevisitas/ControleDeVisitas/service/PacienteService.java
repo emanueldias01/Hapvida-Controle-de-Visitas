@@ -1,0 +1,105 @@
+package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
+
+import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteResponseDTO;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.CpfJaCadastradoException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.LeitoIndisponivelException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteJaCadastradoException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteNotFoundException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class PacienteService {
+
+    @Autowired
+    PacienteRepository pacienteRepository;
+
+    //metodos de validacao
+    private boolean validaPaciente(PacienteRequestDTO data) {
+
+        boolean podeCriarPaciente = false;
+        var nome = pacienteRepository.findByNome(data.nome());
+        var cpf = pacienteRepository.findByCpf(data.cpf());
+        var leito = pacienteRepository.findByNumeroLeito(data.leito());
+
+
+        //VALIDACOES DE DUPLICACOES
+        if(nome.isEmpty()){
+            if(cpf.isEmpty()){
+                if(leito.isEmpty()){
+                    podeCriarPaciente = true;
+                }else {
+                    throw new LeitoIndisponivelException("leito indisponivel");
+                }
+            }else{
+                throw new CpfJaCadastradoException("cpf ja cadastrado");
+            }
+        }else {
+            throw new PacienteJaCadastradoException("nome ja cadastrado");
+        }
+
+
+        //valida cpf
+        if(data.cpf().length() == 11){
+
+        }else {
+            podeCriarPaciente = false;
+        }
+
+        return podeCriarPaciente;
+    }
+
+
+    //metodos service
+
+    public List<PacienteResponseDTO> getAllPacientes(){
+        List<PacienteResponseDTO> list = pacienteRepository.findAll().stream().map(PacienteResponseDTO::new).toList();
+        return list;
+    }
+
+    public PacienteResponseDTO getPacienteByNome(String nome){
+        var paciente = pacienteRepository.findByNome(nome);
+        if(paciente.isPresent()){
+            return new PacienteResponseDTO(paciente.get());
+        }else{
+            throw new RuntimeException("O paciente nao foi encontrado");
+        }
+
+    }
+
+    public PacienteResponseDTO registerNewPaciente(PacienteRequestDTO data){
+
+        if(validaPaciente(data)){
+            Paciente pacienteSave = new Paciente(data);
+            pacienteRepository.save(pacienteSave);
+            return new PacienteResponseDTO(pacienteSave);
+        }else{
+            throw new RuntimeException("Paciente nao registrado");
+        }
+
+    }
+
+    public PacienteResponseDTO updatePaciente(PacienteUpdateDTO data){
+        var paciente = pacienteRepository.findById(data.id());
+
+        if(paciente.isPresent()){
+            var pacienteManipulavel = paciente.get();
+            pacienteManipulavel.updateInfo(data);
+            return new PacienteResponseDTO(pacienteManipulavel);
+        }else{
+            throw new PacienteNotFoundException("O paciente nao foi encontrado");
+        }
+    }
+
+    public void deletePaciente(Long id){
+        pacienteRepository.deleteById(id);
+    }
+
+
+}
