@@ -10,12 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "tab_pacientes")
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Paciente {
@@ -31,7 +31,8 @@ public class Paciente {
     private LocalDateTime dataEntrada;
 
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Visitante> visitantes;
+    private List<Visitante> visitantes = new ArrayList<>();
+
 
     public Paciente(PacienteRequestDTO data) {
         this.nome = data.nome();
@@ -44,5 +45,21 @@ public class Paciente {
         if(data.leito() != 0){
             this.numeroLeito = data.leito();
         }
+    }
+
+    public Paciente(String cpf, Long id, String nome, int numeroLeito) {
+        this.cpf = cpf;
+        this.id = id;
+        this.nome = nome;
+        this.numeroLeito = numeroLeito;
+    }
+
+    public Paciente(String cpf, LocalDateTime dataEntrada, Long id, String nome, int numeroLeito, List<Visitante> visitantes) {
+        this.cpf = cpf;
+        this.dataEntrada = dataEntrada;
+        this.id = id;
+        this.nome = nome;
+        this.numeroLeito = numeroLeito;
+        this.visitantes = visitantes;
     }
 }

@@ -4,7 +4,9 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteResponseDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.CpfJaCadastradoException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.NomeVisitanteJaExisteException;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteNotFoundException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.VisitanteNotFoundException;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.VisitanteRepository;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Categoria;
@@ -42,7 +44,7 @@ public class VisitanteService {
                 throw new CpfJaCadastradoException("cpf ja cadastrado");
             }
         }else {
-            throw new RuntimeException("o visitante ja existe");
+            throw new NomeVisitanteJaExisteException("o visitante ja existe");
         }
 
         return validacaoAceita;
@@ -51,8 +53,14 @@ public class VisitanteService {
 
     private boolean validaQuantidadeDePessoasNoLeito(VisitanteRequestDTO data) {
         boolean podeCadastrar = false;
+
         var categoriaFornecida = data.categoria();
-        List<Visitante> listaDeVisitantesDoPaciente = data.paciente().getVisitantes();
+        //List<Visitante> listaDeVisitantesDoPaciente = data.paciente().getVisitantes();
+
+        List<Visitante> listaDeVisitantesDoPaciente = visitanteRepository.findByPacienteId(data.paciente().getId());
+
+        //nao está contabilizando o tamanho da lista conforme o numero de visitantes
+        System.out.println("tamanho da lista de visitantes do paciente = "+ listaDeVisitantesDoPaciente.size());
         if(listaDeVisitantesDoPaciente.size() < 2){
 
             int contadorA = 0;
@@ -62,11 +70,17 @@ public class VisitanteService {
 
                 if(j.getCategoria() == Categoria.ACOMPANHANTE){
                     contadorA++;
-                }else{
+
+                }else if (j.getCategoria() == Categoria.VISITANTE){
                     contadorV++;
+
                 }
 
+
             }
+
+            System.out.println("Contador a = " + contadorA);
+            System.out.println("Contador v = " + contadorV);
 
             if(contadorA == 0 && contadorV == 0 && categoriaFornecida == Categoria.ACOMPANHANTE){
                 podeCadastrar = true;
@@ -97,14 +111,14 @@ public class VisitanteService {
         return list;
     }
 
-    public VisitanteResponseDTO getVisitanteById(Long id){
-        var visitante = visitanteRepository.findById(id);
+    public VisitanteResponseDTO getVisitanteByNome(String nome){
+        var visitante = visitanteRepository.findByNome(nome);
 
         if(visitante.isPresent()){
             var visitanteManipulavel = visitante.get();
             return new VisitanteResponseDTO(visitanteManipulavel);
         }else{
-            throw new RuntimeException("Visitante nao encontrado");
+            throw new VisitanteNotFoundException("Visitante nao encontrado");
         }
     }
 
@@ -113,6 +127,11 @@ public class VisitanteService {
             if(validaQuantidadeDePessoasNoLeito(data)){
                 Visitante visitanteSave = new Visitante(data);
                 visitanteRepository.save(visitanteSave);
+
+                var paciente = pacienteRepository.findById(data.paciente().getId());
+                List<Visitante> listaDeVisitantesDoPaciente = paciente.get().getVisitantes();
+                listaDeVisitantesDoPaciente.add(visitanteSave);
+
                 return new VisitanteResponseDTO(visitanteSave);
             }else{
                 throw new RuntimeException("Leito cheio");
