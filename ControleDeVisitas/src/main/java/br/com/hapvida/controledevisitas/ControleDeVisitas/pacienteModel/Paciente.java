@@ -36,7 +36,7 @@ public class Paciente {
     public Paciente(PacienteRequestDTO data) {
         this.nome = data.nome();
         this.cpf = data.cpf();
-        this.numeroLeito = data.leito();
+        this.numeroLeito = data.numeroLeito();
         this.dataEntrada = LocalDateTime.now();
     }
 

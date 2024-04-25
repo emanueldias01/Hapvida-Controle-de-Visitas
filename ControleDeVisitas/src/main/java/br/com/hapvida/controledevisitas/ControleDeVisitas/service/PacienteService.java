@@ -26,7 +26,7 @@ public class PacienteService {
         boolean podeCriarPaciente = false;
         var nome = pacienteRepository.findByNome(data.nome());
         var cpf = pacienteRepository.findByCpf(data.cpf());
-        var leito = pacienteRepository.findByNumeroLeito(data.leito());
+        var leito = pacienteRepository.findByNumeroLeito(data.numeroLeito());
 
 
         //VALIDACOES DE DUPLICACOES
@@ -68,7 +68,7 @@ public class PacienteService {
         if(paciente.isPresent()){
             return new PacienteResponseDTO(paciente.get());
         }else{
-            throw new RuntimeException("O paciente nao foi encontrado");
+            throw new PacienteNotFoundException("Nao encontramos o paciente em nosso sistema");
         }
 
     }
