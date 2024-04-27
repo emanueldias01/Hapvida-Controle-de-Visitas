@@ -7,14 +7,19 @@ import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.CpfJaCadastr
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.NomeVisitanteJaExisteException;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteNotFoundException;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.VisitanteNotFoundException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.VisitanteRepository;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Categoria;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VisitanteService {
@@ -104,6 +109,31 @@ public class VisitanteService {
     }
 
 
+    private boolean verificaSeHaAcompanhante(List<Visitante> listaDeVisitantesDoPaciente) {
+
+
+        boolean existeAcompanhante = false;
+        for(Visitante visitante : listaDeVisitantesDoPaciente){
+            if(visitante.getCategoria() == Categoria.ACOMPANHANTE){
+                existeAcompanhante = true;
+            }
+
+        }
+
+        return existeAcompanhante;
+    }
+
+
+    private Visitante pegaReferenciaDoAcompanhante(List<Visitante> listaDeVisitantesDoPaciente) {
+        Visitante acompanhanteReferencia = null;
+        for(Visitante visitante : listaDeVisitantesDoPaciente){
+            if(visitante.getCategoria() == Categoria.ACOMPANHANTE){
+                acompanhanteReferencia = visitante;
+            }
+        }
+        return acompanhanteReferencia;
+    }
+
     //metodos de service
 
     public List<VisitanteResponseDTO> getAllVisitantes(){
@@ -150,5 +180,31 @@ public class VisitanteService {
 
     }
 
+    public void trocarDeAcompanhante(@RequestBody VisitanteRequestDTO data) {
+        Optional<Paciente> pacienteReferencia = pacienteRepository.findByNome(data.paciente().getNome());
+
+        if (pacienteReferencia.isPresent()) {
+            if (data.categoria() == Categoria.ACOMPANHANTE) {
+                var pacienteManipulavel = data.paciente();
+
+                List<Visitante> listaDeVisitantesDoPaciente = pacienteManipulavel.getVisitantes();
+
+                if (verificaSeHaAcompanhante(listaDeVisitantesDoPaciente)) {
+                    Visitante acompanhanteDoPaciente = pegaReferenciaDoAcompanhante(listaDeVisitantesDoPaciente);
+                    Duration diferencaDeHorario = Duration.between(LocalDateTime.now(), acompanhanteDoPaciente.getDataEntrada());
+                    if (diferencaDeHorario.compareTo(Duration.ofHours(2)) >= 0) {
+                        Optional<Paciente> paciente = pacienteRepository.findByNome(data.paciente().getNome());
+                        var list = paciente.get().getVisitantes();
+                        list.remove(acompanhanteDoPaciente);
+                        list.add(new Visitante(data));
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
 
 }
