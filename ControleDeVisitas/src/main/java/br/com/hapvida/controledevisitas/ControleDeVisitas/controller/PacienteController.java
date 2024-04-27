@@ -3,6 +3,7 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.controller;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.service.PacienteService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class PacienteController {
     PacienteService service;
 
     @GetMapping("/allPacientes")
+    @Operation(description = "busca por todos os pacientes que estao registrados no sistema")
     public ResponseEntity getAllPAcientesController(){
         var body = service.getAllPacientes();
         return ResponseEntity.ok(body);
@@ -25,6 +27,7 @@ public class PacienteController {
     }
 
     @GetMapping("/pacienteByNome/{nome}")
+    @Operation(description = "busca paciente pelo nome na URL")
     public ResponseEntity getPacienteByNomeController(@PathVariable String nome){
         var body = service.getPacienteByNome(nome);
         return ResponseEntity.ok(body);
@@ -32,6 +35,7 @@ public class PacienteController {
 
     @PostMapping("/savePaciente")
     @Transactional
+    @Operation(description = "registra um novo paciente no sistema")
     public ResponseEntity savePacienteController(@RequestBody PacienteRequestDTO data, UriComponentsBuilder uriComponentsBuilder){
         var body = service.registerNewPaciente(data);
         var uri = uriComponentsBuilder.path("{id}").buildAndExpand(body.id()).toUri();
@@ -41,6 +45,7 @@ public class PacienteController {
 
     @PutMapping("/updatePaciente")
     @Transactional
+    @Operation(description = "atualiza o leito em que o paciente está")
     public ResponseEntity updatePacienteController(@RequestBody PacienteUpdateDTO data){
         var body = service.updatePaciente(data);
 
@@ -49,6 +54,7 @@ public class PacienteController {
 
     @DeleteMapping("/deletePaciente/{id}")
     @Transactional
+    @Operation(description = "exclui um paciente do sistema")
     public ResponseEntity deletePacienteController(@PathVariable Long id){
         service.deletePaciente(id);
 
