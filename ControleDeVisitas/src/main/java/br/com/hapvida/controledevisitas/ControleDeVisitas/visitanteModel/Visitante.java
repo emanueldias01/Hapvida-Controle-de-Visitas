@@ -37,4 +37,16 @@ public class Visitante {
         this.paciente = data.paciente();
         this.dataEntrada = LocalDateTime.now();
     }
+
+    @Override
+    public String toString() {
+        return "Visitante{" +
+                "categoria=" + categoria +
+                ", id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", dataEntrada=" + dataEntrada +
+                ", paciente=" + paciente +
+                '}';
+    }
 }

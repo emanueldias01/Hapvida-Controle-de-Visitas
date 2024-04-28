@@ -89,4 +89,15 @@ public class HandlerExc {
         );
     }
 
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO trataTempoLimiteAcompanhante(TempoLimiteAcompanhanteException ex){
+
+        return new ErrorDTO(
+                ex.getLancamento(),
+                ex.getMessage()
+        );
+    }
+
 }

@@ -3,10 +3,7 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
 
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteResponseDTO;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.CpfJaCadastradoException;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.NomeVisitanteJaExisteException;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteNotFoundException;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.VisitanteNotFoundException;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.*;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.VisitanteRepository;
@@ -60,12 +57,10 @@ public class VisitanteService {
         boolean podeCadastrar = false;
 
         var categoriaFornecida = data.categoria();
-        //List<Visitante> listaDeVisitantesDoPaciente = data.paciente().getVisitantes();
 
         List<Visitante> listaDeVisitantesDoPaciente = visitanteRepository.findByPacienteId(data.paciente().getId());
 
-        //nao está contabilizando o tamanho da lista conforme o numero de visitantes
-        System.out.println("tamanho da lista de visitantes do paciente = "+ listaDeVisitantesDoPaciente.size());
+        //System.out.println("tamanho da lista de visitantes do paciente = "+ listaDeVisitantesDoPaciente.size());
         if(listaDeVisitantesDoPaciente.size() < 2){
 
             int contadorA = 0;
@@ -101,7 +96,7 @@ public class VisitanteService {
             }
 
         }else{
-            throw new RuntimeException("O leito está cheio");
+            throw new LeitoCheioException("O leito está cheio");
         }
 
         return podeCadastrar;
@@ -114,6 +109,7 @@ public class VisitanteService {
 
         boolean existeAcompanhante = false;
         for(Visitante visitante : listaDeVisitantesDoPaciente){
+
             if(visitante.getCategoria() == Categoria.ACOMPANHANTE){
                 existeAcompanhante = true;
             }
@@ -124,14 +120,14 @@ public class VisitanteService {
     }
 
 
-    private Visitante pegaReferenciaDoAcompanhante(List<Visitante> listaDeVisitantesDoPaciente) {
-        Visitante acompanhanteReferencia = null;
-        for(Visitante visitante : listaDeVisitantesDoPaciente){
-            if(visitante.getCategoria() == Categoria.ACOMPANHANTE){
-                acompanhanteReferencia = visitante;
-            }
+    private Visitante pegaReferenciaDoAcompanhante(Long idPaciente) {
+
+        var acompanahnteOptional = visitanteRepository.buscaAcompanhante(idPaciente);
+        if(acompanahnteOptional.isPresent()){
+            return acompanahnteOptional.get();
+        }else{
+            throw new VisitanteNotFoundException("nenhum acompanhante nao foi encontrado");
         }
-        return acompanhanteReferencia;
     }
 
     //metodos de service
@@ -153,22 +149,34 @@ public class VisitanteService {
     }
 
     public VisitanteResponseDTO registerNewVisitante(VisitanteRequestDTO data){
-        if(validaVisitantesDuplicados(data)){
-            if(validaQuantidadeDePessoasNoLeito(data)){
-                Visitante visitanteSave = new Visitante(data);
-                visitanteRepository.save(visitanteSave);
+        if(validaVisitantesDuplicados(data)) {
+            List<Visitante> listaDeVisitantes = visitanteRepository.findByPacienteId(data.paciente().getId());
+            if (verificaSeHaAcompanhante(listaDeVisitantes) && data.categoria() == Categoria.ACOMPANHANTE) {
+                trocarDeAcompanhante(data);
+                Visitante novoAcompanhante = new Visitante(data);
+                return new VisitanteResponseDTO(novoAcompanhante);
+           }
+            else{
 
-                var paciente = pacienteRepository.findById(data.paciente().getId());
-                List<Visitante> listaDeVisitantesDoPaciente = paciente.get().getVisitantes();
-                listaDeVisitantesDoPaciente.add(visitanteSave);
+                if (validaQuantidadeDePessoasNoLeito(data)) {
+                    Visitante visitanteSave = new Visitante(data);
+                    visitanteRepository.save(visitanteSave);
 
-                return new VisitanteResponseDTO(visitanteSave);
-            }else{
-                throw new RuntimeException("Leito cheio");
+                    var paciente = pacienteRepository.findById(data.paciente().getId());
+                    List<Visitante> listaDeVisitantesDoPaciente = paciente.get().getVisitantes();
+                    listaDeVisitantesDoPaciente.add(visitanteSave);
+
+                    return new VisitanteResponseDTO(visitanteSave);
+                } else {
+                    throw new RuntimeException("Leito cheio");
+                }
             }
+
+
         }else{
             throw new RuntimeException("Nao foi possivel cadastrar o visitante/acompanhante");
         }
+
     }
 
     public void deleteVisitante(Long id){
@@ -184,26 +192,30 @@ public class VisitanteService {
         Optional<Paciente> pacienteReferencia = pacienteRepository.findByNome(data.paciente().getNome());
 
         if (pacienteReferencia.isPresent()) {
-            if (data.categoria() == Categoria.ACOMPANHANTE) {
-                var pacienteManipulavel = data.paciente();
+            var pacienteManipulavel = data.paciente();
 
-                List<Visitante> listaDeVisitantesDoPaciente = pacienteManipulavel.getVisitantes();
+            List<Visitante> listaDeVisitantesDoPaciente = pacienteManipulavel.getVisitantes();
 
-                if (verificaSeHaAcompanhante(listaDeVisitantesDoPaciente)) {
-                    Visitante acompanhanteDoPaciente = pegaReferenciaDoAcompanhante(listaDeVisitantesDoPaciente);
-                    Duration diferencaDeHorario = Duration.between(LocalDateTime.now(), acompanhanteDoPaciente.getDataEntrada());
-                    if (diferencaDeHorario.compareTo(Duration.ofHours(2)) >= 0) {
-                        Optional<Paciente> paciente = pacienteRepository.findByNome(data.paciente().getNome());
-                        var list = paciente.get().getVisitantes();
-                        list.remove(acompanhanteDoPaciente);
-                        list.add(new Visitante(data));
-                    }
+            Visitante acompanhanteDoPaciente = pegaReferenciaDoAcompanhante(pacienteManipulavel.getId());
+            Duration diferencaDeHorario = Duration.between(LocalDateTime.now(), acompanhanteDoPaciente.getDataEntrada());
+            Long diferencaEmHoras = diferencaDeHorario.toHours();
+            diferencaEmHoras *=-1;
 
-                }
+            if (diferencaEmHoras > 2) {
+                deleteVisitante(acompanhanteDoPaciente.getId());
 
+                Optional<Paciente> paciente = pacienteRepository.findByNome(data.paciente().getNome());
+                var list = paciente.get().getVisitantes();
+                Visitante novoAcompanhante = new Visitante(data);
+                list.add(novoAcompanhante);
+            }else {
+                throw new TempoLimiteAcompanhanteException("O acompanhante atual nao está a mais de 2 horas");
             }
 
+        }else{
+            throw new PacienteNotFoundException("O paciente nao foi encontrado");
         }
+
 
     }
 
