@@ -1,4 +1,4 @@
-package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
+package br.com.hapvida.controledevisitas.ControleDeVisitas.entityValidadions;
 
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.*;

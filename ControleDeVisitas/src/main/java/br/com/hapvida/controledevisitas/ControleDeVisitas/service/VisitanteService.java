@@ -3,6 +3,7 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
 
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteResponseDTO;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.entityValidadions.ValidacaoVisitante;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.*;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
