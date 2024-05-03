@@ -19,118 +19,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class VisitanteService {
+public class VisitanteService extends ValidacaoVisitante {
 
     @Autowired
     VisitanteRepository visitanteRepository;
     @Autowired
     PacienteRepository pacienteRepository;
 
-    //metodos de validacao
 
-    private boolean validaVisitantesDuplicados(VisitanteRequestDTO data) {
-        boolean validacaoAceita = false;
-
-        var nome = visitanteRepository.findByNome(data.nome());
-        var cpf = visitanteRepository.findByCpf(data.cpf());
-        var paciente = pacienteRepository.findByNome(data.paciente().getNome());
-
-        if(nome.isEmpty()){
-            if(cpf.isEmpty()){
-                if(paciente.isPresent()){
-                    validacaoAceita = true;
-                }else {
-                    throw new PacienteNotFoundException("Paciente nao encontrado");
-                }
-            }else{
-                throw new CpfJaCadastradoException("cpf ja cadastrado");
-            }
-        }else {
-            throw new NomeVisitanteJaExisteException("o visitante ja existe");
-        }
-
-        return validacaoAceita;
-    }
-
-
-    private boolean validaQuantidadeDePessoasNoLeito(VisitanteRequestDTO data) {
-        boolean podeCadastrar = false;
-
-        var categoriaFornecida = data.categoria();
-
-        List<Visitante> listaDeVisitantesDoPaciente = visitanteRepository.findByPacienteId(data.paciente().getId());
-
-        //System.out.println("tamanho da lista de visitantes do paciente = "+ listaDeVisitantesDoPaciente.size());
-        if(listaDeVisitantesDoPaciente.size() < 2){
-
-            int contadorA = 0;
-            int contadorV = 0;
-
-            for(Visitante j : listaDeVisitantesDoPaciente){
-
-                if(j.getCategoria() == Categoria.ACOMPANHANTE){
-                    contadorA++;
-
-                }else if (j.getCategoria() == Categoria.VISITANTE){
-                    contadorV++;
-
-                }
-
-
-            }
-
-            System.out.println("Contador a = " + contadorA);
-            System.out.println("Contador v = " + contadorV);
-
-            if(contadorA == 0 && contadorV == 0 && categoriaFornecida == Categoria.ACOMPANHANTE){
-                podeCadastrar = true;
-            }
-            if(contadorA == 0 && contadorV <=1 && categoriaFornecida == Categoria.ACOMPANHANTE){
-                podeCadastrar = true;
-            }
-            if(contadorA == 0 && contadorV <= 1 && categoriaFornecida == Categoria.VISITANTE){
-                podeCadastrar = true;
-            }
-            if(contadorA == 1 && contadorV == 0 &&  categoriaFornecida == Categoria.VISITANTE){
-                podeCadastrar = true;
-            }
-
-        }else{
-            throw new LeitoCheioException("O leito está cheio");
-        }
-
-        return podeCadastrar;
-
-    }
-
-
-    private boolean verificaSeHaAcompanhante(List<Visitante> listaDeVisitantesDoPaciente) {
-
-
-        boolean existeAcompanhante = false;
-        for(Visitante visitante : listaDeVisitantesDoPaciente){
-
-            if(visitante.getCategoria() == Categoria.ACOMPANHANTE){
-                existeAcompanhante = true;
-            }
-
-        }
-
-        return existeAcompanhante;
-    }
-
-
-    private Visitante pegaReferenciaDoAcompanhante(Long idPaciente) {
-
-        var acompanahnteOptional = visitanteRepository.buscaAcompanhante(idPaciente);
-        if(acompanahnteOptional.isPresent()){
-            return acompanahnteOptional.get();
-        }else{
-            throw new VisitanteNotFoundException("nenhum acompanhante nao foi encontrado");
-        }
-    }
-
-    //metodos de service
 
     public List<VisitanteResponseDTO> getAllVisitantes(){
         List<VisitanteResponseDTO> list = visitanteRepository.findAll().stream().map(VisitanteResponseDTO::new).toList();
