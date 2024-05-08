@@ -7,9 +7,11 @@ import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.VisitanteRe
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Categoria;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class ValidacaoVisitante {
     @Autowired
     PacienteRepository pacienteRepository;

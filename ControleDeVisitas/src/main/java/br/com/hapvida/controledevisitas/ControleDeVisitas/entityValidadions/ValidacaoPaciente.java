@@ -6,7 +6,9 @@ import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.LeitoIndispo
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteJaCadastradoException;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ValidacaoPaciente {
 
     @Autowired
