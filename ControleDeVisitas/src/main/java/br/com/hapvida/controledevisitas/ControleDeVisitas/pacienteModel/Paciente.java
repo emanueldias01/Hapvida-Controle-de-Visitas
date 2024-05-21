@@ -4,6 +4,7 @@ import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,11 +24,18 @@ public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true, nullable = false)
+    @NotBlank
     private String nome;
+
     @Column(unique = true, nullable = false)
+    @NotBlank
     private String cpf;
+
+    @NotBlank
     private int numeroLeito;
+
     private LocalDateTime dataEntrada;
 
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

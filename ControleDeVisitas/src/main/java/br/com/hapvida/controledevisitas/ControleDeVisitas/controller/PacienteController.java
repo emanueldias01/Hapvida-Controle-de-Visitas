@@ -5,6 +5,7 @@ import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.service.PacienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class PacienteController {
     @PostMapping("/savePaciente")
     @Transactional
     @Operation(description = "registra um novo paciente no sistema")
-    public ResponseEntity savePacienteController(@RequestBody PacienteRequestDTO data, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity savePacienteController(@RequestBody @Valid PacienteRequestDTO data, UriComponentsBuilder uriComponentsBuilder){
         var body = service.registerNewPaciente(data);
         var uri = uriComponentsBuilder.path("{id}").buildAndExpand(body.id()).toUri();
 
@@ -46,7 +47,7 @@ public class PacienteController {
     @PutMapping("/updatePaciente")
     @Transactional
     @Operation(description = "atualiza o leito em que o paciente está")
-    public ResponseEntity updatePacienteController(@RequestBody PacienteUpdateDTO data){
+    public ResponseEntity updatePacienteController(@RequestBody @Valid PacienteUpdateDTO data){
         var body = service.updatePaciente(data);
 
         return ResponseEntity.ok(body);
