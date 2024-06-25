@@ -50,24 +50,9 @@ public class Paciente {
     }
 
     public void updateInfo(PacienteUpdateDTO data) {
-        if(data.leito() != 0){
+        if (data.leito() != 0) {
             this.numeroLeito = data.leito();
         }
     }
 
-    public Paciente(String cpf, Long id, String nome, int numeroLeito) {
-        this.cpf = cpf;
-        this.id = id;
-        this.nome = nome;
-        this.numeroLeito = numeroLeito;
-    }
-
-    public Paciente(String cpf, LocalDateTime dataEntrada, Long id, String nome, int numeroLeito, List<Visitante> visitantes) {
-        this.cpf = cpf;
-        this.dataEntrada = dataEntrada;
-        this.id = id;
-        this.nome = nome;
-        this.numeroLeito = numeroLeito;
-        this.visitantes = visitantes;
-    }
 }
