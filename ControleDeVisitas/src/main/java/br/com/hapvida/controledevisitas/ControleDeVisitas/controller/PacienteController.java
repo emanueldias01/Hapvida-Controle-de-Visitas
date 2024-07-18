@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/paciente")
+@CrossOrigin(origins = "*")
 public class PacienteController {
 
     @Autowired
