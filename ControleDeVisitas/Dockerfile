@@ -14,7 +14,7 @@ FROM eclipse-temurin:latest
 RUN mkdir -p usr/src/app
 
 WORKDIR usr/src/app
-COPY --from=build usr/src/app/target/LeadEmail-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build usr/src/app/target/ControleDeVisitas-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
