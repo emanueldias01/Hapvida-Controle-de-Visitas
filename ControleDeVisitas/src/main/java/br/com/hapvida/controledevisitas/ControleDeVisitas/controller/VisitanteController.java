@@ -21,7 +21,6 @@ public class VisitanteController {
     @Operation(description = "busca todos os visitantes registrados")
     public ResponseEntity getAllVisitantesController(){
         var body = service.getAllVisitantes();
-
         return ResponseEntity.ok(body);
     }
 
@@ -29,7 +28,6 @@ public class VisitanteController {
     @Operation(description = "busca o visitante pelo nome passado na URL")
     public ResponseEntity getVisitanteByNomeController(@PathVariable String nome){
         var body = service.getVisitanteByNome(nome);
-
         return ResponseEntity.ok(body);
     }
 
@@ -39,7 +37,6 @@ public class VisitanteController {
     public ResponseEntity saveVisitanteController(@RequestBody VisitanteRequestDTO data, UriComponentsBuilder uriComponentsBuilder){
         var body = service.registerNewVisitante(data);
         var uri = uriComponentsBuilder.path("{id}").buildAndExpand(body.id()).toUri();
-
         return ResponseEntity.created(uri).body(body);
     }
 
@@ -48,7 +45,6 @@ public class VisitanteController {
     @Operation(description = "exclui um visitante do sistema")
     public ResponseEntity deleteVisitanteByIdController(@PathVariable Long id){
         service.deleteVisitante(id);
-
         return ResponseEntity.noContent().build();
     }
 

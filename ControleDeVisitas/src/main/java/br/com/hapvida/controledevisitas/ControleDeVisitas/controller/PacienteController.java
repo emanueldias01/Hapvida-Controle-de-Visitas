@@ -25,7 +25,6 @@ public class PacienteController {
     public ResponseEntity getAllPAcientesController(){
         var body = service.getAllPacientes();
         return ResponseEntity.ok(body);
-
     }
 
     @GetMapping("/pacienteByNome/{nome}")
@@ -41,7 +40,6 @@ public class PacienteController {
     public ResponseEntity savePacienteController(@RequestBody @Valid PacienteRequestDTO data, UriComponentsBuilder uriComponentsBuilder){
         var body = service.registerNewPaciente(data);
         var uri = uriComponentsBuilder.path("{id}").buildAndExpand(body.id()).toUri();
-
         return ResponseEntity.created(uri).body(body);
     }
 
@@ -50,7 +48,6 @@ public class PacienteController {
     @Operation(description = "atualiza o leito em que o paciente está")
     public ResponseEntity updatePacienteController(@RequestBody @Valid PacienteUpdateDTO data){
         var body = service.updatePaciente(data);
-
         return ResponseEntity.ok(body);
     }
 
@@ -59,7 +56,6 @@ public class PacienteController {
     @Operation(description = "exclui um paciente do sistema")
     public ResponseEntity deletePacienteController(@PathVariable Long id){
         service.deletePaciente(id);
-
         return ResponseEntity.noContent().build();
     }
 
