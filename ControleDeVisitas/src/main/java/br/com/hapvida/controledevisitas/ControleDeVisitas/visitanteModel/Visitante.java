@@ -43,8 +43,11 @@ public class Visitante {
         this.nome = data.nome();
         this.cpf = data.cpf();
         this.categoria = data.categoria();
-        this.paciente = data.paciente();
         this.dataEntrada = LocalDateTime.now();
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
     }
 
     @Override

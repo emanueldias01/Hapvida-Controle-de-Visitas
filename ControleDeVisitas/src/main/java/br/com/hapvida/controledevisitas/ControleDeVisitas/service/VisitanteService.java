@@ -57,6 +57,7 @@ public class VisitanteService extends ValidacaoVisitante {
 
                 if (validaQuantidadeDePessoasNoLeito(data)) {
                     Visitante visitanteSave = new Visitante(data);
+                    visitanteSave.setPaciente(pacienteRepository.findById(data.paciente().getId()).get());
                     visitanteRepository.save(visitanteSave);
 
                     var paciente = pacienteRepository.findById(data.paciente().getId());
