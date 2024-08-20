@@ -47,7 +47,7 @@ public class VisitanteService extends ValidacaoVisitante {
 
     public VisitanteResponseDTO registerNewVisitante(VisitanteRequestDTO data){
         if(validaVisitantesDuplicados(data)) {
-            List<Visitante> listaDeVisitantes = visitanteRepository.findByPacienteId(data.paciente().getId());
+            List<Visitante> listaDeVisitantes = visitanteRepository.findByPacienteId(data.pacienteId());
             if (verificaSeHaAcompanhante(listaDeVisitantes) && data.categoria() == Categoria.ACOMPANHANTE) {
                 trocarDeAcompanhante(data);
                 Visitante novoAcompanhante = new Visitante(data);
@@ -59,7 +59,7 @@ public class VisitanteService extends ValidacaoVisitante {
                     Visitante visitanteSave = new Visitante(data);
                     visitanteRepository.save(visitanteSave);
 
-                    var paciente = pacienteRepository.findById(data.paciente().getId());
+                    var paciente = pacienteRepository.findById(data.pacienteId());
                     List<Visitante> listaDeVisitantesDoPaciente = paciente.get().getVisitantes();
                     listaDeVisitantesDoPaciente.add(visitanteSave);
 
@@ -86,10 +86,11 @@ public class VisitanteService extends ValidacaoVisitante {
     }
 
     public void trocarDeAcompanhante(@RequestBody VisitanteRequestDTO data) {
-        Optional<Paciente> pacienteReferencia = pacienteRepository.findByNome(data.paciente().getNome());
+        var paciente = pacienteRepository.findById(data.pacienteId());
+        Optional<Paciente> pacienteReferencia = pacienteRepository.findByNome(paciente.get().getNome());
 
         if (pacienteReferencia.isPresent()) {
-            var pacienteManipulavel = data.paciente();
+            var pacienteManipulavel = paciente.get();
 
             List<Visitante> listaDeVisitantesDoPaciente = pacienteManipulavel.getVisitantes();
 
@@ -101,7 +102,7 @@ public class VisitanteService extends ValidacaoVisitante {
             if (diferencaEmHoras > 2) {
                 deleteVisitante(acompanhanteDoPaciente.getId());
 
-                Optional<Paciente> paciente = pacienteRepository.findByNome(data.paciente().getNome());
+                //Optional<Paciente> paciente = pacienteRepository.findByNome(pacienteManipulavel.getNome());
                 var list = paciente.get().getVisitantes();
                 Visitante novoAcompanhante = new Visitante(data);
                 list.add(novoAcompanhante);
