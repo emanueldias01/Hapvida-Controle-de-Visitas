@@ -25,7 +25,8 @@ public class ValidacaoVisitante {
 
         var nome = visitanteRepository.findByNome(data.nome());
         var cpf = visitanteRepository.findByCpf(data.cpf());
-        var paciente = pacienteRepository.findByNome(data.paciente().getNome());
+        var idPaciente = pacienteRepository.findById(data.pacienteId()).get();
+        var paciente = pacienteRepository.findByNome(idPaciente.getNome());
 
         if(nome.isEmpty()){
             if(cpf.isEmpty()){
@@ -50,7 +51,7 @@ public class ValidacaoVisitante {
 
         var categoriaFornecida = data.categoria();
 
-        List<Visitante> listaDeVisitantesDoPaciente = visitanteRepository.findByPacienteId(data.paciente().getId());
+        List<Visitante> listaDeVisitantesDoPaciente = visitanteRepository.findByPacienteId(data.pacienteId());
 
         //System.out.println("tamanho da lista de visitantes do paciente = "+ listaDeVisitantesDoPaciente.size());
         if(listaDeVisitantesDoPaciente.size() < 2){

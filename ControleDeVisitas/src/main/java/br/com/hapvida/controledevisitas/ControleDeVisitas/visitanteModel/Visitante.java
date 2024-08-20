@@ -2,6 +2,7 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel;
 
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +21,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Visitante {
+
+    @Autowired
+    PacienteRepository pacienteRepository;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +48,7 @@ public class Visitante {
         this.nome = data.nome();
         this.cpf = data.cpf();
         this.categoria = data.categoria();
-        this.paciente = data.paciente();
+        this.paciente = pacienteRepository.findById(data.pacienteId()).get();
         this.dataEntrada = LocalDateTime.now();
     }
 
