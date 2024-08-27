@@ -47,7 +47,7 @@ public class VisitanteService extends ValidacaoVisitante {
 
     public VisitanteResponseDTO registerNewVisitante(VisitanteRequestDTO data){
         if(validaVisitantesDuplicados(data)) {
-            List<Visitante> listaDeVisitantes = visitanteRepository.findByPacienteId(data.paciente().getId());
+            List<Visitante> listaDeVisitantes = visitanteRepository.findByPacienteId(data.paciente().id());
             if (verificaSeHaAcompanhante(listaDeVisitantes) && data.categoria() == Categoria.ACOMPANHANTE) {
                 trocarDeAcompanhante(data);
                 Visitante novoAcompanhante = new Visitante(data);
@@ -57,10 +57,10 @@ public class VisitanteService extends ValidacaoVisitante {
 
                 if (validaQuantidadeDePessoasNoLeito(data)) {
                     Visitante visitanteSave = new Visitante(data);
-                    visitanteSave.setPaciente(pacienteRepository.findById(data.paciente().getId()).get());
+                    visitanteSave.setPaciente(pacienteRepository.findById(data.paciente().id()).get());
                     visitanteRepository.save(visitanteSave);
 
-                    var paciente = pacienteRepository.findById(data.paciente().getId());
+                    var paciente = pacienteRepository.findById(data.paciente().id());
                     List<Visitante> listaDeVisitantesDoPaciente = paciente.get().getVisitantes();
                     listaDeVisitantesDoPaciente.add(visitanteSave);
 
@@ -87,10 +87,10 @@ public class VisitanteService extends ValidacaoVisitante {
     }
 
     public void trocarDeAcompanhante(@RequestBody VisitanteRequestDTO data) {
-        Optional<Paciente> pacienteReferencia = pacienteRepository.findByNome(data.paciente().getNome());
+        Optional<Paciente> pacienteReferencia = pacienteRepository.findByNome(data.paciente().nome());
 
         if (pacienteReferencia.isPresent()) {
-            var pacienteManipulavel = data.paciente();
+            var pacienteManipulavel = pacienteReferencia.get();
 
             List<Visitante> listaDeVisitantesDoPaciente = pacienteManipulavel.getVisitantes();
 
@@ -102,7 +102,7 @@ public class VisitanteService extends ValidacaoVisitante {
             if (diferencaEmHoras > 2) {
                 deleteVisitante(acompanhanteDoPaciente.getId());
 
-                Optional<Paciente> paciente = pacienteRepository.findByNome(data.paciente().getNome());
+                Optional<Paciente> paciente = pacienteRepository.findByNome(data.paciente().nome());
                 var list = paciente.get().getVisitantes();
                 Visitante novoAcompanhante = new Visitante(data);
                 list.add(novoAcompanhante);

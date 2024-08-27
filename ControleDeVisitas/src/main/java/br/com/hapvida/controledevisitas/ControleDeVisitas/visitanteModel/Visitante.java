@@ -30,7 +30,7 @@ public class Visitante {
     @NotBlank
     private String cpf;
 
-    @NotBlank
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
 

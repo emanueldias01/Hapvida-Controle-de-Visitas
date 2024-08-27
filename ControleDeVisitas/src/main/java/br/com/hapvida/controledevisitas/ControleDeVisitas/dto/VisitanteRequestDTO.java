@@ -12,7 +12,7 @@ public record VisitanteRequestDTO(
         @NotBlank
         String cpf,
         @NotNull
-        Paciente paciente,
-        @NotBlank
+        PacienteResponseDTO paciente,
+        @NotNull
         Categoria categoria) {
 }

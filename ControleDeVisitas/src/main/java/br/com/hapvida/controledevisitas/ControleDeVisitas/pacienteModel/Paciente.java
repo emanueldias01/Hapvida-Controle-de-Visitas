@@ -5,6 +5,7 @@ import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class Paciente {
     @NotBlank
     private String cpf;
 
-    @NotBlank
+    @NotNull
     private int numeroLeito;
 
     private LocalDateTime dataEntrada;
