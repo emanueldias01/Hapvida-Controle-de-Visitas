@@ -29,9 +29,6 @@ class VisitanteRepositoryTest {
     @Autowired
     VisitanteRepository visitanteRepository;
 
-    @Autowired
-    PacienteRepository pacienteRepository;
-
     @Test
     @DisplayName("Deve retornar o acompanhante daquele paciente")
     void buscaAcompanhanteSucess(){

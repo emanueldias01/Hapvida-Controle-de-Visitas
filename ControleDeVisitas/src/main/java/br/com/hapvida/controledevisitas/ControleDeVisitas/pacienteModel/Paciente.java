@@ -50,6 +50,14 @@ public class Paciente {
         this.dataEntrada = LocalDateTime.now();
     }
 
+    public Paciente(String cpf, LocalDateTime dataEntrada, Long id, String nome, int numeroLeito) {
+        this.cpf = cpf;
+        this.dataEntrada = dataEntrada;
+        this.id = id;
+        this.nome = nome;
+        this.numeroLeito = numeroLeito;
+    }
+
     public void updateInfo(PacienteUpdateDTO data) {
         if (data.leito() != 0) {
             this.numeroLeito = data.leito();
