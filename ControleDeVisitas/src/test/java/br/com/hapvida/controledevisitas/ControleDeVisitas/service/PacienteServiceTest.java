@@ -2,6 +2,7 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
 
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteResponseDTO;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.entityValidadions.ValidacaoPaciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteNotFoundException;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
@@ -95,6 +96,28 @@ class PacienteServiceTest {
 
         var result = pacienteService.registerNewPaciente(dto);
         assertThat(result.nome()).isEqualTo("nome");
+    }
+
+    @Test
+    @DisplayName("Nao deve deixar atualizar paciente")
+    void updatePacienteFail(){
+        PacienteUpdateDTO dto = new PacienteUpdateDTO(1L, 1);
+        when(pacienteRepository.findById(dto.id())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(PacienteNotFoundException.class, () -> pacienteService.updatePaciente(dto));
+    }
+
+    @Test
+    @DisplayName("Deve deixar atualizar paciente")
+    void updatePacienteSucess(){
+        PacienteUpdateDTO dto = new PacienteUpdateDTO(1L, 1);
+
+        Paciente paciente = new Paciente(1L, 1);
+
+        when(pacienteRepository.findById(dto.id())).thenReturn(Optional.of(paciente));
+
+        var result = pacienteService.updatePaciente(dto);
+        assertThat(result.id()).isEqualTo(dto.id());
     }
 
 }

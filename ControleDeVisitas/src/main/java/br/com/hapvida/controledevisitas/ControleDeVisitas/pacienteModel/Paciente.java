@@ -6,7 +6,6 @@ import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitan
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,6 +53,11 @@ public class Paciente {
         this.dataEntrada = dataEntrada;
         this.id = id;
         this.nome = nome;
+        this.numeroLeito = numeroLeito;
+    }
+
+    public Paciente(Long id, int numeroLeito) {
+        this.id = id;
         this.numeroLeito = numeroLeito;
     }
 
