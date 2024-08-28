@@ -72,7 +72,7 @@ class PacienteServiceTest {
     }
 
     @Test
-    @DisplayName("Retorna Exception por usuario nao existir")
+    @DisplayName("Retorna Exception por paciente nao existir")
     void getPacienteByNomeFail(){
         Paciente p1 = new Paciente("1234566789", LocalDateTime.now(),1L, "emanuel", 4);
         when(pacienteRepository.findByNome("fail")).thenReturn(Optional.empty());
