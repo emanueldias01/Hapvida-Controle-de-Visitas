@@ -13,10 +13,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PacienteService extends ValidacaoPaciente {
+public class PacienteService{
 
     @Autowired
     PacienteRepository pacienteRepository;
+    @Autowired
+    ValidacaoPaciente validacaoPaciente;
 
     //metodos service
 
@@ -37,7 +39,7 @@ public class PacienteService extends ValidacaoPaciente {
 
     public PacienteResponseDTO registerNewPaciente(PacienteRequestDTO data){
 
-        if(validaPaciente(data)){
+        if(validacaoPaciente.validaPaciente(data)){
             Paciente pacienteSave = new Paciente(data);
             pacienteRepository.save(pacienteSave);
             return new PacienteResponseDTO(pacienteSave);

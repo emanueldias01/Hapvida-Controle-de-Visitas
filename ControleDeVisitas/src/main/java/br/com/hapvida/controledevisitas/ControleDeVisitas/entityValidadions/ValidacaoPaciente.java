@@ -14,7 +14,7 @@ public class ValidacaoPaciente {
     @Autowired
     PacienteRepository pacienteRepository;
 
-    protected boolean validaPaciente(PacienteRequestDTO data) {
+    public boolean validaPaciente(PacienteRequestDTO data) {
 
         boolean podeCriarPaciente = false;
         var nome = pacienteRepository.findByNome(data.nome());
