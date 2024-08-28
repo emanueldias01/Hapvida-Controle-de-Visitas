@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class VisitanteService extends ValidacaoVisitante {
+public class VisitanteService {
 
     @Autowired
     VisitanteRepository visitanteRepository;
     @Autowired
     PacienteRepository pacienteRepository;
+    @Autowired
+    ValidacaoVisitante validacaoVisitante;
 
 
 
@@ -46,16 +48,16 @@ public class VisitanteService extends ValidacaoVisitante {
     }
 
     public VisitanteResponseDTO registerNewVisitante(VisitanteRequestDTO data){
-        if(validaVisitantesDuplicados(data)) {
+        if(validacaoVisitante.validaVisitantesDuplicados(data)) {
             List<Visitante> listaDeVisitantes = visitanteRepository.findByPacienteId(data.paciente().id());
-            if (verificaSeHaAcompanhante(listaDeVisitantes) && data.categoria() == Categoria.ACOMPANHANTE) {
+            if (validacaoVisitante.verificaSeHaAcompanhante(listaDeVisitantes) && data.categoria() == Categoria.ACOMPANHANTE) {
                 trocarDeAcompanhante(data);
                 Visitante novoAcompanhante = new Visitante(data);
                 return new VisitanteResponseDTO(novoAcompanhante);
            }
             else{
 
-                if (validaQuantidadeDePessoasNoLeito(data)) {
+                if (validacaoVisitante.validaQuantidadeDePessoasNoLeito(data)) {
                     Visitante visitanteSave = new Visitante(data);
                     visitanteSave.setPaciente(pacienteRepository.findById(data.paciente().id()).get());
                     visitanteRepository.save(visitanteSave);
@@ -94,7 +96,7 @@ public class VisitanteService extends ValidacaoVisitante {
 
             List<Visitante> listaDeVisitantesDoPaciente = pacienteManipulavel.getVisitantes();
 
-            Visitante acompanhanteDoPaciente = pegaReferenciaDoAcompanhante(pacienteManipulavel.getId());
+            Visitante acompanhanteDoPaciente = validacaoVisitante.pegaReferenciaDoAcompanhante(pacienteManipulavel.getId());
             Duration diferencaDeHorario = Duration.between(LocalDateTime.now(), acompanhanteDoPaciente.getDataEntrada());
             Long diferencaEmHoras = diferencaDeHorario.toHours();
             diferencaEmHoras *=-1;

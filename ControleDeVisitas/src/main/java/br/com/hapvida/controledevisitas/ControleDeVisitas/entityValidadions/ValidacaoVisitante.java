@@ -20,7 +20,7 @@ public class ValidacaoVisitante {
 
 
 
-    protected boolean validaVisitantesDuplicados(VisitanteRequestDTO data) {
+    public boolean validaVisitantesDuplicados(VisitanteRequestDTO data) {
         boolean validacaoAceita = false;
 
         var nome = visitanteRepository.findByNome(data.nome());
@@ -45,7 +45,7 @@ public class ValidacaoVisitante {
     }
 
 
-    protected boolean validaQuantidadeDePessoasNoLeito(VisitanteRequestDTO data) {
+    public boolean validaQuantidadeDePessoasNoLeito(VisitanteRequestDTO data) {
         boolean podeCadastrar = false;
 
         var categoriaFornecida = data.categoria();
@@ -96,7 +96,7 @@ public class ValidacaoVisitante {
     }
 
 
-    protected boolean verificaSeHaAcompanhante(List<Visitante> listaDeVisitantesDoPaciente) {
+    public boolean verificaSeHaAcompanhante(List<Visitante> listaDeVisitantesDoPaciente) {
 
 
         boolean existeAcompanhante = false;
@@ -112,7 +112,7 @@ public class ValidacaoVisitante {
     }
 
 
-    protected Visitante pegaReferenciaDoAcompanhante(Long idPaciente) {
+    public Visitante pegaReferenciaDoAcompanhante(Long idPaciente) {
 
         var acompanahnteOptional = visitanteRepository.buscaAcompanhante(idPaciente);
         if(acompanahnteOptional.isPresent()){
