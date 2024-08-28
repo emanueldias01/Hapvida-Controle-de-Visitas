@@ -42,7 +42,6 @@ public class Paciente {
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Visitante> visitantes = new ArrayList<>();
 
-
     public Paciente(PacienteRequestDTO data) {
         this.nome = data.nome();
         this.cpf = data.cpf();

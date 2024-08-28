@@ -3,6 +3,7 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteResponseDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.entityValidadions.ValidacaoPaciente;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteNotFoundException;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 class PacienteServiceTest {
@@ -49,6 +53,7 @@ class PacienteServiceTest {
         result.add(new PacienteResponseDTO(p1));
         result.add(new PacienteResponseDTO(p2));
 
+        assertThat(result.size()).isEqualTo(2);
         when(pacienteService.getAllPacientes()).thenReturn(result);
 
     }
@@ -58,17 +63,19 @@ class PacienteServiceTest {
     void getPacienteByNomeSucess(){
         Paciente p1 = new Paciente("1234566789", LocalDateTime.now(),1L, "emanuel", 4);
 
-        when(pacienteRepository.findByNome(p1.getNome())).thenReturn(Optional.of(p1));
-        Optional<Paciente> result = pacienteRepository.findByNome(p1.getNome());
+        when(pacienteRepository.findByNome("emanuel")).thenReturn(Optional.of(p1));
 
-        assertThat(result.isPresent()).isTrue();
+        var result = pacienteService.getPacienteByNome("emanuel");
+        assertNotNull(result);
+        assertThat(result.nome()).isEqualTo(p1.getNome());
     }
 
     @Test
     @DisplayName("Retorna Exception por usuario nao existir")
     void getPacienteByNomeFail(){
         Paciente p1 = new Paciente("1234566789", LocalDateTime.now(),1L, "emanuel", 4);
-        when(pacienteRepository.findByNome("fail")).thenThrow(RuntimeException.class);
+        when(pacienteRepository.findByNome("fail")).thenReturn(Optional.empty());
+        Assertions.assertThrows(PacienteNotFoundException.class, () -> pacienteService.getPacienteByNome("fail"));
     }
 
     @Test
@@ -86,7 +93,8 @@ class PacienteServiceTest {
         PacienteRequestDTO dto = new PacienteRequestDTO("nome", "cpf", 1);
         when(pacienteService.validacaoPaciente.validaPaciente(dto)).thenReturn(true);
 
-        when(pacienteService.registerNewPaciente(dto)).thenReturn(any());
+        var result = pacienteService.registerNewPaciente(dto);
+        assertThat(result.nome()).isEqualTo("nome");
     }
 
 }
