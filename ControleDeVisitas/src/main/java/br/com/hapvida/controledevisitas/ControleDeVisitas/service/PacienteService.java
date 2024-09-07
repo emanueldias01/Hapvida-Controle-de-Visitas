@@ -53,9 +53,14 @@ public class PacienteService{
         var paciente = pacienteRepository.findById(data.id());
 
         if(paciente.isPresent()){
+            var leitoBusca = pacienteRepository.findByNumeroLeito(data.leito());
+            if(leitoBusca.isPresent()){
+                throw new RuntimeException("O leito em que quer editar está sendo usado");
+            }
             var pacienteManipulavel = paciente.get();
             pacienteManipulavel.updateInfo(data);
             return new PacienteResponseDTO(pacienteManipulavel);
+
         }else{
             throw new PacienteNotFoundException("O paciente nao foi encontrado");
         }
