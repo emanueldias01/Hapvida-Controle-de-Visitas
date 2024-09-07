@@ -67,4 +67,7 @@ public class Paciente {
         }
     }
 
+    public void setNumeroLeito(@NotNull int numeroLeito) {
+        this.numeroLeito = numeroLeito;
+    }
 }
