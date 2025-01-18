@@ -25,8 +25,6 @@ public class VisitanteService {
     VisitanteRepository visitanteRepository;
     @Autowired
     PacienteRepository pacienteRepository;
-    @Autowired
-    ValidacaoVisitante validacaoVisitante;
 
     public List<VisitanteResponseDTO> getAllVisitantes(){
         List<VisitanteResponseDTO> list = visitanteRepository.findAll().stream().map(VisitanteResponseDTO::new).toList();

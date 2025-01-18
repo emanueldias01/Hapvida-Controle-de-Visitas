@@ -75,10 +75,49 @@ class PacienteServiceTest {
     }
 
     @Test
-    @DisplayName("Nao deve deixar cadastrar paciente")
+    @DisplayName("Nao deve deixar cadastrar paciente por nome")
+    void registerNewPacienteFailCpf(){
+        String nome = "nome";
+        String cpf = "11122233312";
+        int numeroLeito = 1;
+
+        PacienteRequestDTO dto = new PacienteRequestDTO(nome, cpf, numeroLeito);
+
+        Paciente paciente = new Paciente(dto);
+
+        when(pacienteRepository.findByNome(nome)).thenReturn(Optional.of(paciente));
+
+        Assertions.assertThrows(RuntimeException.class, () -> pacienteService.registerNewPaciente(dto));
+    }
+
+    @Test
+    @DisplayName("Nao deve deixar cadastrar paciente por cpf")
+    void registerNewPacienteFailLeito(){
+        String nome = "nome";
+        String cpf = "11122233312";
+        int numeroLeito = 1;
+
+        PacienteRequestDTO dto = new PacienteRequestDTO(nome, cpf, numeroLeito);
+
+        Paciente paciente = new Paciente(dto);
+
+        when(pacienteRepository.findByCpf(cpf)).thenReturn(Optional.of(paciente));
+
+        Assertions.assertThrows(RuntimeException.class, () -> pacienteService.registerNewPaciente(dto));
+    }
+
+    @Test
+    @DisplayName("Nao deve deixar cadastrar paciente leito")
     void registerNewPacienteFail(){
-        PacienteRequestDTO dto = new PacienteRequestDTO("nome", "cpf", 1);
-        when(pacienteService.validacaoPaciente.validaPaciente(dto)).thenThrow(RuntimeException.class);
+        String nome = "nome";
+        String cpf = "11122233312";
+        int numeroLeito = 1;
+
+        PacienteRequestDTO dto = new PacienteRequestDTO(nome, cpf, numeroLeito);
+
+        Paciente paciente = new Paciente(dto);
+
+        when(pacienteRepository.findByNumeroLeito(numeroLeito)).thenReturn(Optional.of(paciente));
 
         Assertions.assertThrows(RuntimeException.class, () -> pacienteService.registerNewPaciente(dto));
     }
@@ -86,8 +125,14 @@ class PacienteServiceTest {
     @Test
     @DisplayName("Deixa cadastrar paciente")
     void registerNewPacienteSucess(){
-        PacienteRequestDTO dto = new PacienteRequestDTO("nome", "cpf", 1);
-        when(pacienteService.validacaoPaciente.validaPaciente(dto)).thenReturn(true);
+        String nome = "nome";
+        String cpf = "11122233312";
+        int numeroLeito = 1;
+
+        PacienteRequestDTO dto = new PacienteRequestDTO(nome, cpf, numeroLeito);
+        when(pacienteRepository.findByNome(nome)).thenReturn(Optional.empty());
+        when(pacienteRepository.findByCpf(cpf)).thenReturn(Optional.empty());
+        when(pacienteRepository.findByNumeroLeito(numeroLeito)).thenReturn(Optional.empty());
 
         var result = pacienteService.registerNewPaciente(dto);
         assertThat(result.nome()).isEqualTo("nome");
