@@ -3,9 +3,8 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteResponseDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.entityValidadions.ValidacaoPaciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.PacienteNotFoundException;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.paciente.Paciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,9 +29,6 @@ class PacienteServiceTest {
 
     @Mock
     PacienteRepository pacienteRepository;
-
-    @Mock
-    ValidacaoPaciente validacaoPaciente;
 
     @Autowired
     @InjectMocks

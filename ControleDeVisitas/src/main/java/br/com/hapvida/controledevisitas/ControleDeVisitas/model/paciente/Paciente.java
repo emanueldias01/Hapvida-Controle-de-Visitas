@@ -1,8 +1,8 @@
-package br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel;
+package br.com.hapvida.controledevisitas.ControleDeVisitas.model.paciente;
 
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteUpdateDTO;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.visitante.Visitante;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

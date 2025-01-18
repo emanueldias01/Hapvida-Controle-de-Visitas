@@ -3,11 +3,10 @@ package br.com.hapvida.controledevisitas.ControleDeVisitas.repository;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteResponseDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteRequestDTO;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Categoria;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.paciente.Paciente;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.visitante.Categoria;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.visitante.Visitante;
 import jakarta.persistence.EntityManager;
-import jakarta.validation.Valid;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")

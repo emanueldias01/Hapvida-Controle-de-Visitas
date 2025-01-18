@@ -1,16 +1,13 @@
 package br.com.hapvida.controledevisitas.ControleDeVisitas.service;
 
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteRequestDTO;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.PacienteResponseDTO;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.dto.VisitanteResponseDTO;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.entityValidadions.ValidacaoVisitante;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.exception.VisitanteNotFoundException;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.paciente.Paciente;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.PacienteRepository;
 import br.com.hapvida.controledevisitas.ControleDeVisitas.repository.VisitanteRepository;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Categoria;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
-import org.hibernate.validator.constraints.Mod10Check;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.visitante.Categoria;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.visitante.Visitante;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,8 +32,6 @@ class VisitanteServiceTest {
     VisitanteRepository visitanteRepository;
     @Mock
     PacienteRepository pacienteRepository;
-    @Mock
-    ValidacaoVisitante validacaoVisitante;
 
     @Autowired
     @InjectMocks

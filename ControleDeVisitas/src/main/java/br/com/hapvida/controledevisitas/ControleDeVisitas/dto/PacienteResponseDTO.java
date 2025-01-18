@@ -1,6 +1,6 @@
 package br.com.hapvida.controledevisitas.ControleDeVisitas.dto;
 
-import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.paciente.Paciente;
 
 import java.time.LocalDateTime;
 

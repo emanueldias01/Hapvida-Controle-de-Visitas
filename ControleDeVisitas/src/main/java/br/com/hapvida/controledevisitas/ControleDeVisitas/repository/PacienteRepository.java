@@ -1,9 +1,7 @@
 package br.com.hapvida.controledevisitas.ControleDeVisitas.repository;
 
-import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.paciente.Paciente;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

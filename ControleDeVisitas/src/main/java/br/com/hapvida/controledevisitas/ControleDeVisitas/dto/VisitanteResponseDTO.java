@@ -1,8 +1,7 @@
 package br.com.hapvida.controledevisitas.ControleDeVisitas.dto;
 
-import br.com.hapvida.controledevisitas.ControleDeVisitas.pacienteModel.Paciente;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Categoria;
-import br.com.hapvida.controledevisitas.ControleDeVisitas.visitanteModel.Visitante;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.visitante.Categoria;
+import br.com.hapvida.controledevisitas.ControleDeVisitas.model.visitante.Visitante;
 
 public record VisitanteResponseDTO(Long id, String nome,String cpf, Categoria categoria, String paciente) {
 
