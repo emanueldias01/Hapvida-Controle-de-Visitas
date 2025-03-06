@@ -127,40 +127,16 @@ public class VisitanteService {
 
 
     private boolean validaQuantidadeDePessoasNoLeito(VisitanteRequestDTO data) {
-        boolean podeCadastrar = false;
         var categoriaFornecida = data.categoria();
         List<Visitante> listaDeVisitantesDoPaciente = visitanteRepository.findByPacienteId(data.paciente().id());
 
         if(listaDeVisitantesDoPaciente.size() < 2){
-            int contadorA = 0;
-            int contadorV = 0;
-
-            for(Visitante j : listaDeVisitantesDoPaciente){
-                if(j.getCategoria() == Categoria.ACOMPANHANTE){
-                    contadorA++;
-                }else if (j.getCategoria() == Categoria.VISITANTE){
-                    contadorV++;
-                }
-            }
-            System.out.println("Contador a = " + contadorA);
-            System.out.println("Contador v = " + contadorV);
-
-            if(contadorA == 0 && contadorV == 0 && categoriaFornecida == Categoria.ACOMPANHANTE){
-                podeCadastrar = true;
-            }
-            if(contadorA == 0 && contadorV <=1 && categoriaFornecida == Categoria.ACOMPANHANTE){
-                podeCadastrar = true;
-            }
-            if(contadorA == 0 && contadorV <= 1 && categoriaFornecida == Categoria.VISITANTE){
-                podeCadastrar = true;
-            }
-            if(contadorA == 1 && contadorV == 0 &&  categoriaFornecida == Categoria.VISITANTE){
-                podeCadastrar = true;
-            }
-        }else{
             throw new LeitoCheioException("O leito está cheio");
         }
-        return podeCadastrar;
+
+        long contadorA = listaDeVisitantesDoPaciente.stream().filter(v ->v.getCategoria() == Categoria.ACOMPANHANTE).count();
+        long contadorV = listaDeVisitantesDoPaciente.stream().filter(v -> v.getCategoria() == Categoria.VISITANTE).count();
+        return podeCadastrar(contadorA, contadorV, categoriaFornecida);
     }
 
 
@@ -182,5 +158,10 @@ public class VisitanteService {
         }else{
             throw new VisitanteNotFoundException("nenhum acompanhante nao foi encontrado");
         }
+    }
+
+    private boolean podeCadastrar(long contadorA, long contadorV, Categoria categoriaFornecida) {
+        return (contadorA == 0 && contadorV <= 1 && (categoriaFornecida == Categoria.ACOMPANHANTE || categoriaFornecida == Categoria.VISITANTE))
+                || (contadorA == 1 && contadorV == 0 && categoriaFornecida == Categoria.VISITANTE);
     }
 }
